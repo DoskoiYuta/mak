@@ -57,7 +57,7 @@ func Parse(path string) (*ParsedMakefile, error) {
 	if err != nil {
 		return nil, fmt.Errorf("open makefile: %w", err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	pm, err := parseReader(f)
 	if err != nil {
@@ -206,12 +206,12 @@ func isIdentifier(s string) bool {
 	}
 	for i, r := range s {
 		if i == 0 {
-			if !(isAlpha(r) || r == '_') {
+			if !isAlpha(r) && r != '_' {
 				return false
 			}
 			continue
 		}
-		if !(isAlpha(r) || isDigit(r) || r == '_' || r == '-' || r == '.') {
+		if !isAlpha(r) && !isDigit(r) && r != '_' && r != '-' && r != '.' {
 			return false
 		}
 	}

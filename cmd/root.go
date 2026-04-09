@@ -123,12 +123,12 @@ func resolveMakefile(dir, mf string) (string, error) {
 	info, err := os.Stat(candidate)
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
-			return "", fmt.Errorf("Makefileが見つかりません: %s", candidate)
+			return "", fmt.Errorf("指定された Makefile が見つかりません: %s", candidate)
 		}
 		return "", err
 	}
 	if info.IsDir() {
-		return "", fmt.Errorf("Makefileパスがディレクトリです: %s", candidate)
+		return "", fmt.Errorf("指定された Makefile パスはディレクトリです: %s", candidate)
 	}
 	return candidate, nil
 }

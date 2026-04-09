@@ -60,13 +60,10 @@ type Model struct {
 	focus focusArea
 	mode  mode
 
-	width  int
-	height int
+	width int
 
-	quitting   bool
-	result     Result
-	showHelp   bool
-	errMessage string
+	quitting bool
+	result   Result
 }
 
 // New returns an initialised Model.
@@ -137,25 +134,3 @@ func (m *Model) currentTarget() (mkfile.Target, bool) {
 	return m.parsed.Targets[idx], true
 }
 
-// buildRunOptions collects the current target + variable inputs into a
-// mkfile.RunOptions suitable for BuildArgs/PreviewCommand.
-func (m *Model) buildRunOptions(makefilePath, directory string) (mkfile.RunOptions, bool) {
-	t, ok := m.currentTarget()
-	if !ok {
-		return mkfile.RunOptions{}, false
-	}
-	vars := make([]mkfile.VarAssignment, 0, len(m.varInputs))
-	for i, name := range m.varNames {
-		val := m.varInputs[i].Value()
-		if val == "" {
-			continue
-		}
-		vars = append(vars, mkfile.VarAssignment{Name: name, Value: val})
-	}
-	return mkfile.RunOptions{
-		Makefile:  makefilePath,
-		Directory: directory,
-		Target:    t.Name,
-		Variables: vars,
-	}, true
-}
