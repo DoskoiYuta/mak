@@ -50,4 +50,14 @@ run:
 ## ヘルプを表示する
 help:
 	@echo "使用可能なターゲット:"
-	@grep -E '^## ' $(MAKEFILE_LIST) | sed -e 's/## //'
+	@echo "  all      — fmt, vet, lint, test, build をまとめて実行"
+	@echo "  build    — アプリをビルドする"
+	@echo "  fmt      — gofmt を実行する"
+	@echo "  vet      — go vet を実行する"
+	@echo "  lint     — golangci-lint を実行する"
+	@echo "  test     — go test -race を実行する"
+	@echo "  tidy     — go mod tidy を実行する"
+	@echo "  clean    — ビルド成果物を削除する"
+	@echo '  install  — $$GOPATH/bin へインストールする'
+	@echo "  run      — mak を起動する"
+	@echo "  help     — このヘルプを表示する"
