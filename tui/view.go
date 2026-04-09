@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/table"
 
 	"github.com/doskoiyuta/mak/fuzzy"
 	"github.com/doskoiyuta/mak/mkfile"
@@ -150,27 +151,48 @@ func (m Model) renderVars() string {
 	if len(m.varInputs) == 0 {
 		return ""
 	}
-	nameWidth := 0
-	for _, n := range m.varNames {
-		if len(n) > nameWidth {
-			nameWidth = len(n)
+
+	// Pre-render each input to a fixed minimum width so the value column
+	// doesn't resize as the user types.
+	const minValueCol = 34
+	rows := make([][]string, 0, len(m.varInputs))
+	for i, name := range m.varNames {
+		view := m.varInputs[i].View()
+		pad := minValueCol - lipgloss.Width(view)
+		if pad > 0 {
+			view += strings.Repeat(" ", pad)
 		}
+		rows = append(rows, []string{name, view})
 	}
 
-	var b strings.Builder
-	for i, name := range m.varNames {
-		paddedName := name + strings.Repeat(" ", nameWidth-len(name))
-		focused := m.focus == focusArgs && i == m.varFocus
-		if focused {
-			b.WriteString(m.styles.VarNameFocus.Render(paddedName))
-		} else {
-			b.WriteString(m.styles.VarName.Render(paddedName))
-		}
-		b.WriteString("  ")
-		b.WriteString(m.varInputs[i].View())
-		b.WriteString("\n")
-	}
-	return strings.TrimRight(b.String(), "\n")
+	t := table.New().
+		Border(lipgloss.RoundedBorder()).
+		BorderStyle(m.styles.Border).
+		BorderTop(true).
+		BorderBottom(true).
+		BorderLeft(true).
+		BorderRight(true).
+		BorderRow(false).
+		BorderColumn(true).
+		StyleFunc(func(row, col int) lipgloss.Style {
+			base := lipgloss.NewStyle().Padding(0, 1)
+			if row < 0 {
+				return base
+			}
+			focused := m.focus == focusArgs && row == m.varFocus
+			switch col {
+			case 0:
+				if focused {
+					return base.Inherit(m.styles.VarNameFocus)
+				}
+				return base.Inherit(m.styles.VarName)
+			default:
+				return base
+			}
+		}).
+		Rows(rows...)
+
+	return t.String()
 }
 
 func (m Model) renderPreview() string {
