@@ -5,7 +5,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/doskoiyuta/mak/fuzzy"
-	"github.com/doskoiyuta/mak/makefile"
+	"github.com/doskoiyuta/mak/mkfile"
 )
 
 // Init implements tea.Model.
@@ -199,9 +199,9 @@ func (m *Model) currentResult() (Result, bool) {
 	if !ok {
 		return Result{}, false
 	}
-	vars := make([]makefile.VarAssignment, 0, len(m.varInputs))
+	vars := make([]mkfile.VarAssignment, 0, len(m.varInputs))
 	for i, name := range m.varNames {
-		vars = append(vars, makefile.VarAssignment{
+		vars = append(vars, mkfile.VarAssignment{
 			Name:  name,
 			Value: m.varInputs[i].Value(),
 		})

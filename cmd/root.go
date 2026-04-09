@@ -11,7 +11,7 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/spf13/cobra"
 
-	"github.com/doskoiyuta/mak/makefile"
+	"github.com/doskoiyuta/mak/mkfile"
 	"github.com/doskoiyuta/mak/tui"
 )
 
@@ -58,7 +58,7 @@ func run(opts options) error {
 		return err
 	}
 
-	parsed, err := makefile.Parse(path)
+	parsed, err := mkfile.Parse(path)
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func run(opts options) error {
 	case tui.ExitCancel:
 		return nil
 	case tui.ExitCopy:
-		cmdStr := makefile.PreviewCommand(makefile.RunOptions{
+		cmdStr := mkfile.PreviewCommand(mkfile.RunOptions{
 			Makefile:  opts.makefile,
 			Directory: opts.directory,
 			Target:    result.Target,
@@ -91,17 +91,17 @@ func run(opts options) error {
 		fmt.Fprintln(os.Stderr, "コピー済み: "+cmdStr)
 		return nil
 	case tui.ExitRun:
-		runOpts := makefile.RunOptions{
+		runOpts := mkfile.RunOptions{
 			Makefile:  opts.makefile,
 			Directory: opts.directory,
 			Target:    result.Target,
 			Variables: result.Variables,
 		}
 		if opts.dryRun {
-			fmt.Println(makefile.PreviewCommand(runOpts))
+			fmt.Println(mkfile.PreviewCommand(runOpts))
 			return nil
 		}
-		code, err := makefile.Run(runOpts)
+		code, err := mkfile.Run(runOpts)
 		if err != nil {
 			return err
 		}

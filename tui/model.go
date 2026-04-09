@@ -5,7 +5,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 
 	"github.com/doskoiyuta/mak/fuzzy"
-	"github.com/doskoiyuta/mak/makefile"
+	"github.com/doskoiyuta/mak/mkfile"
 )
 
 // focusArea identifies which UI section currently has input focus.
@@ -40,12 +40,12 @@ const (
 type Result struct {
 	Action    ExitAction
 	Target    string
-	Variables []makefile.VarAssignment
+	Variables []mkfile.VarAssignment
 }
 
 // Model is the Bubble Tea model for the mak TUI.
 type Model struct {
-	parsed    *makefile.ParsedMakefile
+	parsed    *mkfile.ParsedMakefile
 	styles    Styles
 	search    textinput.Model
 	allNames  []string
@@ -70,7 +70,7 @@ type Model struct {
 }
 
 // New returns an initialised Model.
-func New(parsed *makefile.ParsedMakefile) Model {
+func New(parsed *mkfile.ParsedMakefile) Model {
 	ti := textinput.New()
 	ti.Placeholder = "Type to search targets..."
 	ti.Prompt = ""
@@ -122,37 +122,37 @@ func (m *Model) syncVarInputsForSelection() {
 
 // currentTarget returns the target currently highlighted by the selection
 // cursor.
-func (m *Model) currentTarget() (makefile.Target, bool) {
+func (m *Model) currentTarget() (mkfile.Target, bool) {
 	if len(m.matches) == 0 {
-		return makefile.Target{}, false
+		return mkfile.Target{}, false
 	}
 	if m.selected < 0 || m.selected >= len(m.matches) {
-		return makefile.Target{}, false
+		return mkfile.Target{}, false
 	}
 	name := m.matches[m.selected].Target
 	idx, ok := m.targetIdx[name]
 	if !ok {
-		return makefile.Target{}, false
+		return mkfile.Target{}, false
 	}
 	return m.parsed.Targets[idx], true
 }
 
 // buildRunOptions collects the current target + variable inputs into a
-// makefile.RunOptions suitable for BuildArgs/PreviewCommand.
-func (m *Model) buildRunOptions(makefilePath, directory string) (makefile.RunOptions, bool) {
+// mkfile.RunOptions suitable for BuildArgs/PreviewCommand.
+func (m *Model) buildRunOptions(makefilePath, directory string) (mkfile.RunOptions, bool) {
 	t, ok := m.currentTarget()
 	if !ok {
-		return makefile.RunOptions{}, false
+		return mkfile.RunOptions{}, false
 	}
-	vars := make([]makefile.VarAssignment, 0, len(m.varInputs))
+	vars := make([]mkfile.VarAssignment, 0, len(m.varInputs))
 	for i, name := range m.varNames {
 		val := m.varInputs[i].Value()
 		if val == "" {
 			continue
 		}
-		vars = append(vars, makefile.VarAssignment{Name: name, Value: val})
+		vars = append(vars, mkfile.VarAssignment{Name: name, Value: val})
 	}
-	return makefile.RunOptions{
+	return mkfile.RunOptions{
 		Makefile:  makefilePath,
 		Directory: directory,
 		Target:    t.Name,

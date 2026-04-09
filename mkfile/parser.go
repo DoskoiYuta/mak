@@ -1,6 +1,6 @@
-// Package makefile parses Makefiles to extract targets, descriptions, and
+// Package mkfile parses Makefiles to extract targets, descriptions, and
 // the set of variables referenced inside each target's recipe.
-package makefile
+package mkfile
 
 import (
 	"bufio"

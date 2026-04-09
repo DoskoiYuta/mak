@@ -5,12 +5,12 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/doskoiyuta/mak/makefile"
+	"github.com/doskoiyuta/mak/mkfile"
 )
 
 // Run launches the TUI and blocks until the user quits. It returns the
 // Result describing what the user chose to do.
-func Run(parsed *makefile.ParsedMakefile) (Result, error) {
+func Run(parsed *mkfile.ParsedMakefile) (Result, error) {
 	m := New(parsed)
 	prog := tea.NewProgram(m)
 	finalModel, err := prog.Run()

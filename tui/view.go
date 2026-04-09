@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 
 	"github.com/doskoiyuta/mak/fuzzy"
-	"github.com/doskoiyuta/mak/makefile"
+	"github.com/doskoiyuta/mak/mkfile"
 )
 
 const (
@@ -178,15 +178,15 @@ func (m Model) renderPreview() string {
 	if !ok {
 		return m.styles.Preview.Render("$ make")
 	}
-	vars := make([]makefile.VarAssignment, 0, len(m.varInputs))
+	vars := make([]mkfile.VarAssignment, 0, len(m.varInputs))
 	for i, name := range m.varNames {
 		val := m.varInputs[i].Value()
 		if val == "" {
 			continue
 		}
-		vars = append(vars, makefile.VarAssignment{Name: name, Value: val})
+		vars = append(vars, mkfile.VarAssignment{Name: name, Value: val})
 	}
-	cmd := makefile.PreviewCommand(makefile.RunOptions{
+	cmd := mkfile.PreviewCommand(mkfile.RunOptions{
 		Target:    t.Name,
 		Variables: vars,
 	})
